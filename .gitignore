@@ -1,3 +1,7 @@
 *.pdf
 textbook
 Triple-py
+.DS_Store
+../.DS_Store
+./AI_agent/myvenv
+./AI_agent/API_KEY.txt

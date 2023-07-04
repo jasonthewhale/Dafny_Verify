@@ -4,9 +4,7 @@ import time
 import openai
 import subprocess
 
-os.environ['OPENAI_API_KEY'] = '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'
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
 
 def turbo_completion(messages):
     completion = ""
