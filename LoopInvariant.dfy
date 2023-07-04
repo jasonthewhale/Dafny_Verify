@@ -54,8 +54,25 @@ ensures i == 0
 }
 
 
+method Quotient() 
+{
+    var x, y := 0, 191;
+    while 7 <= y
+    invariant 0 <= y && 7 * x + y == 191
+    {
+        y := y - 7;
+        x := x + 1;
+    }
+    assert x == 191 / 7 && y == 191 % 7;
+}
 
-r, N := 0, 104;
-while (r+1)*(r+1) <= N
-invariant 0 <= r && r*r <= N
-assert 0 <= r && r*r <= N < (r+1)*(r+1)
+method Quotient1() 
+{
+    var x, y := 0, 191;
+    while 7 <= y
+    invariant 0 <= y && 7 * x + y == 191
+    {
+        x, y := 27, 2;
+    }
+    assert x == 191 / 7 && y == 191 % 7;
+}

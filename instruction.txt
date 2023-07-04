@@ -1,0 +1,12 @@
+Chapters 1 and 2 – basic Dafny and reasoning
+
+Chapters 11 to 15 – loop invariants and lots of examples.
+
+In particular, pay attention to the loop design techniques. They appear in Sections:
+11.4 (Integer Square Root),
+12.0 (Iterative Fibonacci),
+12.2 (Powers of 2),
+13.1 (Linear Search),
+13.3 (Minimum) and
+13.6 (Canyon Search).
+14.1
