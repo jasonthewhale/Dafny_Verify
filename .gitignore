@@ -1,6 +1,8 @@
 *.pdf
+*.docx
+*.xlsx
+*.pptx
 textbook
-Triple-py
 .DS_Store
 ../.DS_Store
 ./AI_agent/myvenv

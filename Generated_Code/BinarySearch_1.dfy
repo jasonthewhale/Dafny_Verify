@@ -1,8 +1,9 @@
-method BinarySearch(a: array<int>, key: int) returns (n: int) 
-        requires forall i, j :: 0 <= i < j < a.Length ==> a[i] <= a[j] 
+method BinarySearch(a: array<int>, key: int) returns (n: int)
+        requires forall i, j :: 0 <= i < j < a.Length ==> a[i] <= a[j]
         ensures 0 <= n <= a.Length
         ensures forall i :: 0 <= i < n ==> a[i] < key
-        ensures forall i :: n <= i < a.Length ==> key <= a[i] 
+        ensures forall i :: n <= i < a.Length ==> key <= a[i]
+        ensures (exists i :: 0 <= i < a.Length && a[i] == key) ==> a[n] == key
 {
         var lo, hi := 0, a.Length; 
         while lo < hi

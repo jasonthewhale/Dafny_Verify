@@ -1,0 +1,63 @@
+PROMPT:
+
+method rearrange(arr: array<int>, N: int) returns (front: int)
+    requires N == arr.Length
+    requires forall i :: 0 <= i < arr.Length ==> arr[i] == 0 || arr[i] == 1
+    modifies arr
+    ensures 0 <= front <= arr.Length
+    ensures forall i :: 0 <= i <= front - 1 ==> arr[i] == 0
+    ensures forall j :: front <= j <= N - 1 ==> arr[j] == 1
+    ensures multiset(arr[..]) == old(multiset(arr[..]))
+{   
+    front := 0;
+    var back := N;
+    while(front < back)
+    {
+        if(arr[front] == 1){
+            arr[front], arr[back - 1] := arr[back - 1], arr[front];
+            back := back - 1;
+        }else{
+            front := front + 1;
+        }
+    }
+    return front;
+}
+
+
+COMPLETION:
+// Rearrange an array of 0s and 1s such that all 0s are before all 1s
+method rearrange(arr: array<int>, N: int) returns (front: int)
+    requires N == arr.Length
+    // Requires that the array only contains 0s and 1s
+    requires forall i :: 0 <= i < arr.Length ==> arr[i] == 0 || arr[i] == 1
+    modifies arr
+    // Ensures that front is the index of the first 1
+    ensures 0 <= front <= arr.Length
+    // Ensures that all 0s are before all 1s
+    ensures forall i :: 0 <= i <= front - 1 ==> arr[i] == 0
+    ensures forall j :: front <= j <= N - 1 ==> arr[j] == 1
+    // Ensures that the elements of the array is unchanged
+    ensures multiset(arr[..]) == old(multiset(arr[..]))
+{   
+    front := 0;
+    var back := N;
+    while(front < back)
+        invariant 0 <= front <= back <= N
+        // Guranatees that the array only contains 0s and 1s
+        invariant forall i :: 0 <= i < arr.Length ==> arr[i] == 0 || arr[i] == 1
+        // Guranatees that all elements are 0 in range [0, front - 1]
+        invariant forall i :: 0 <= i <= front - 1 ==> arr[i] == 0
+        // Guranatees that all elements are 1 in range [back, N - 1]
+        invariant forall j :: back <= j < N ==> arr[j] == 1
+        // Guranatees that the elements of the array is unchanged
+        invariant multiset(arr[..]) == old(multiset(arr[..]))
+    {
+        if(arr[front] == 1){
+            arr[front], arr[back - 1] := arr[back - 1], arr[front];
+            back := back - 1;
+        }else{
+            front := front + 1;
+        }
+    }
+    return front;
+}

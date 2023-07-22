@@ -12,6 +12,7 @@ method CanyonSearch(a: array<int>, b: array<int>) returns (d: nat)
   d := Dist(a[0],b[0]);
   var m,n := 0,0;
   while m < a.Length && n < b.Length
+    decreases b.Length - n, a.Length - m
     invariant 0 <= m <= a.Length
     invariant 0 <= n <= b.Length
     invariant forall i, j :: 0 <= i < m && 0 <= j < n ==> d <= Dist(a[i],b[j])
@@ -24,6 +25,7 @@ method CanyonSearch(a: array<int>, b: array<int>) returns (d: nat)
       m := m + 1;
     } else {
       n := n + 1;
+      m := 0;
     }
   }
 }

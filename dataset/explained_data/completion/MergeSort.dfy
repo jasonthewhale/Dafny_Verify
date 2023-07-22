@@ -1,0 +1,52 @@
+function sorted(a: array<int>, fromIndex: int, toIndex: int): bool
+reads a
+  requires fromIndex >= 0 && toIndex <= a.Length && fromIndex <= toIndex
+{
+  forall i, j :: fromIndex <= i <= j < toIndex ==> a[i] <= a[j]
+}
+
+// Divid an unsorted list into sublists, sorting them, and then merging them back 
+// together to form a sorted list.
+method merge(a: array<int>, start: int, mid: int, n: int) returns (b: array<int>)
+  requires n <= a.Length;
+  requires 0 <= start;
+  requires start <= mid;
+  requires mid <= n;
+  // The first subarray (from 'start' to 'mid') must be sorted.
+  requires sorted(a, start, mid);
+  // The second subarray (from 'mid' to 'n') must be sorted.
+  requires sorted(a, mid, n);
+  // The length of the output array 'b' must be the same as the length of the input array 'a'.
+  ensures b.Length == a.Length;
+{
+  var i, l, r: int;
+  b := new int[a.Length];
+  i, l, r := start, start, mid;
+  
+  while (i < n)
+    invariant start <= i <= n;
+    invariant start <= l <= mid;
+    invariant mid <= r <= n;
+    // All elements in the left subarray are in ascending order.
+    invariant forall j, k :: l <= j && j < k < mid ==> a[j] <= a[k];
+    // All elements in the right subarray are in ascending order.
+    invariant forall j, k :: r <= j && j < k < n ==> a[j] <= a[k];
+    // Each element in 'b' is no larger than the smallest remaining element in the left subarray of 'a'.
+    invariant l < mid ==> forall j :: start <= j < i ==> b[j] <= a[l];
+    // Each element in 'b' is no larger than the smallest remaining element in the right subarray of 'a'.
+    invariant r < n ==> forall j :: start <= j < i ==> b[j] <= a[r];
+    // The total number of remaining elements is constant.
+    invariant n - i == (mid - l) + (n - r);
+    // The part of 'b' that has been filled in is sorted.
+    invariant sorted(b, start, i);
+  {
+    if r >= n || (l < mid && a[l] < a[r]) {
+      b[i] := a[l];
+      l := l + 1;
+    } else {
+      b[i] := a[r];
+      r := r + 1;
+    }
+    i := i + 1;
+  }
+}

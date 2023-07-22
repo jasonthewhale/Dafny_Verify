@@ -1,0 +1,21 @@
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
+
+function Length<T>(xs: List<T>): nat {
+    match xs
+    case Nil => 0
+    case Cons(_, tail) => 1 + Length(tail)
+}
+
+method repeatValue<T>(d: T, n: nat) returns (result: List<T>)
+    ensures Length(result) == n
+{
+    result := Nil;
+    var i := 0;
+    while i < n
+        invariant i <= n
+        invariant Length(result) == i
+    {
+        result := Cons(d, result);
+        i := i + 1;
+    }
+}

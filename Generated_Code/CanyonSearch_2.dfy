@@ -1,4 +1,3 @@
-
 function Dist(x: int, y: int): nat {
   if x < y then y - x else x - y
 }
@@ -13,11 +12,13 @@ method CanyonSearch(a: array<int>, b: array<int>) returns (d: nat)
   d := Dist(a[0],b[0]);
   var m,n := 0,0;
   while m < a.Length && n < b.Length
+    decreases b.Length - n, a.Length - m
     invariant 0 <= m <= a.Length
     invariant 0 <= n <= b.Length
     invariant forall i, j :: 0 <= i < m && 0 <= j < n ==> d <= Dist(a[i],b[j])
-    invariant exists i, j :: 0 <= i < a.Length && 0 <= j < b.Length && d == Dist(a[i],b[j])
-    invariant forall i, j :: 0 <= i < m && 0 <= j < n ==> d == Dist(a[i],b[j])
+    invariant exists i, j :: 0 <= i < m && 0 <= j < n && d == Dist(a[i],b[j])
+    invariant forall i, j :: 0 <= i < m && 0 <= j < n ==> d <= Dist(a[i],b[j])
+    invariant forall i, j :: 0 <= i < m && 0 <= j < n ==> exists k, l :: 0 <= k < a.Length && 0 <= l < b.Length && d == Dist(a[k],b[l])
   {
     if Dist(a[m],b[n]) < d {
       d := Dist(a[m],b[n]);
@@ -26,6 +27,7 @@ method CanyonSearch(a: array<int>, b: array<int>) returns (d: nat)
       m := m + 1;
     } else {
       n := n + 1;
+      m := 0;
     }
   }
 }

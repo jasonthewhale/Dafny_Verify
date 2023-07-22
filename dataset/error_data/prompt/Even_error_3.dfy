@@ -1,0 +1,39 @@
+function has_even(v: bool, a: array<bool>, n: int): bool
+reads a;
+  requires n >= 0;
+  requires n <= a.Length;
+{
+  if n == 0 then
+    false
+  else if a[n-1] == v then
+    !has_even(v, a, n-1)
+  else
+    has_even(v, a, n-1)
+}
+
+method even_true(a: array<bool>, n: int) returns (even: bool)
+  requires n >= 0;
+  requires n <= a.Length;
+  ensures has_even(true, a, n) <==> even;
+{
+  var i: int := 0;
+  even := false;
+
+  while(i < n)
+    invariant 0 <= i <= n;
+    invariant has_even(true, a, i) ==> even;
+  {
+    if(a[i])
+    {
+      even := !even;
+    }
+    i := i + 1;
+  }
+}
+
+Error:
+'while' in 'while(i < n)': Error: a postcondition could not be proved on this return path
+'has_even(true, a, n) <==> even' in 'ensures has_even(true, a, n) <==> even;': Related location: this is the postcondition that could not be proved
+'even' in 'invariant has_even(true, a, i) ==> even;': Error: this invariant could not be proved to be maintained by the loop
+'even' in 'invariant has_even(true, a, i) ==> even;': Related message: loop invariant violation
+Dafny program verifier finished with 2 verified, 2 errors

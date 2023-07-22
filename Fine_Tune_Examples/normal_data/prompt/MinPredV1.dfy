@@ -1,0 +1,31 @@
+function contains(v: int, a: array<int>, n: int): bool 
+reads a
+  requires n >= 0 && n <= a.Length
+{
+  exists j: int :: 0 <= j < n && a[j] == v
+}
+
+function lower_bound(v: int, a: array<int>, n: int): bool 
+reads a
+  requires n >= 0 && n <= a.Length
+{
+  forall j: int :: 0 <= j < n ==> a[j] >= v
+}
+
+method min(a: array<int>, n: int) returns (min: int)
+  requires n > 0 && n <= a.Length;
+  ensures contains(min, a, n);
+  ensures lower_bound(min, a, n);
+{
+  var i: int;
+  min := a[0];
+  i := 1;
+
+  while i < n
+  {
+    if a[i] < min {
+      min := a[i];
+    }
+    i := i + 1;
+  }
+}

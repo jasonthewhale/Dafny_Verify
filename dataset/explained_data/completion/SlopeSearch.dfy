@@ -1,0 +1,34 @@
+// Looks for a key in a sloping landscape. More precisely, the landscape is a 
+// rectangular area where any step North or East takes you to higher (or unchanged) elevations.
+// A typical way to indicate elevations in a 2-dimensional map is to draw contour lines that 
+// connect the points with equal elevation.
+method SlopeSearch(a: array2<int>, key: int) returns (m: int, n: int)
+    // Requires that the array is sorted in ascending order
+    requires forall i, j, j1 ::
+        0 <= i < a.Length0 && 0 <= j < j1 < a.Length1 ==>
+        a[i,j] <= a[i,j1]
+    requires forall i, i1, j ::
+        0 <= i < i1 < a.Length0 && 0 <= j < a.Length1 ==>
+        a[i,j] <= a[i1,j]
+    // Requires key can be calculated from the elements array
+    requires exists i, j ::
+        0 <= i < a.Length0 && 0 <= j < a.Length1 && a[i,j] == key
+    // Ensure m, n are in range and represent the same value as key
+    ensures 0 <= m < a.Length0 && 0 <= n < a.Length1
+    ensures a[m,n] == key
+{
+    m, n := 0, a.Length1 - 1;
+    while a[m,n] != key
+        invariant 0 <= m < a.Length0 && 0 <= n < a.Length1
+        // For the 2-D array a, ensures there are two indices i, j in range (m, a.Length0) 
+        // and (0, n) respectively such that a[i,j] == key.
+        invariant exists i, j :: m <= i < a.Length0 && 0 <= j <= n && a[i,j] == key
+        decreases a.Length0 - m + n
+    {
+        if a[m,n] < key {
+            m := m + 1;
+        } else {
+            n := n - 1;
+        }
+    }
+}

@@ -1,0 +1,16 @@
+method Main(xInit: int, y: int) returns (z: int)
+  requires xInit >= 0
+  requires y >= 0
+  ensures z == 0
+{
+  var x := xInit;
+  z := x * y;
+  
+  while x > 0
+    decreases x // This ensures termination of the loop
+    invariant z == x * y // This ensures that z is always equal to x * y, even during the loop
+  {
+    x := x - 1;
+    z := z - y;
+  }
+}
