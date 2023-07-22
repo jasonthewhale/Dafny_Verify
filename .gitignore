@@ -4,3 +4,4 @@
 *.pptx
 textbook
 .DS_Store
+./AI_agent/myvenv
