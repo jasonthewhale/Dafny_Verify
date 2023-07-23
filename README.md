@@ -24,7 +24,7 @@ To use this tool, you'll need Python installed on your machine. Follow the below
    
    Use the following command to clone this repository:
    
-   `````
+   ```
    git clone https://github.com/yourusername/Dafny_Verify.git
    ```
 
