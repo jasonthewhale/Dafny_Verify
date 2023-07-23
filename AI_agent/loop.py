@@ -113,7 +113,7 @@ def manul_test():
     error = verify('../Test_Cases/SelectionSort.dfy', 'dafny verify ')
     print(process_error_message('../Test_Cases/SelectionSort.dfy', error))
 
-# ../Test_Cases/SelectionSort.dfy
+
 def process_error_message(generated_file_path, error_message):
     pairs = fetch_pairs(error_message)
     originl_lines = error_message.split('\n')
@@ -153,47 +153,9 @@ def process_error_message(generated_file_path, error_message):
     #     to_replace = f'({row},{col})'
     #     error_message = error_message.replace(to_replace, line_content)
     # return error_message
-            
-
-def main(file_name):
-    test_file_path = '../Test_Cases/' + file_name + '.dfy'
-    method = read_file(test_file_path)
-    system_message = f"""
-Add missing loop invariant for this method without change or remove current code. Since your response\
-will be tested with verifier, pls be careful and accurate. 
-
-The response should Directly start with valid dafny code and code only. Do not apologize or explain \
-when making mistakes. Remeber to put full complete method into a single code block and return the \
-code block as your mesponse. Read error message carefully and modify your code accordingly.
-    """
-    messages=[
-          {"role": "system", "content": system_message},
-          {"role": "user", "content": method}
-        ]
-
-    completion = turbo_completion(messages)
-    loop_seq = 1
-    generated_file_path = f'../Generated_Code/{file_name}_{loop_seq}.dfy'
-    save_file(generated_file_path, completion)
-    test_result = verify(generated_file_path, 'dafny verify ')
-    optimized_error_message = process_error_message(generated_file_path, test_result)
-    valid_string = 'verified, 0 errors'
-
-    while valid_string not in test_result:
-        print(f'\033[91mFailed in seq: {loop_seq}\033[0m\n{optimized_error_message}\n\n')
-        generated_file_path = f'../Generated_Code/{file_name}_{loop_seq}.dfy'
-        save_file(generated_file_path, completion)
-        messages.append({"role": "assistant", "content": completion})
-        messages.append({"role": "user", "content": 'But verifier gave error: ' + optimized_error_message})
-        save_json(f'./chat_log/{file_name}_{loop_seq}.json', messages)
-        loop_seq += 1
-        time.sleep(2)
-        completion = turbo_completion(messages)
-        test_result = verify(generated_file_path, 'dafny verify ')
-        optimized_error_message = process_error_message(generated_file_path, test_result)
-    print(f'\033[92mSucceed in seq: {loop_seq}\033[0m\n{test_result}')
 
 
+# Helper function to create error examples for dataset
 def create_error_examples():
     seq = 1
     max_seq = 5
@@ -249,3 +211,42 @@ Read error message carefully and modify your code accordingly.
             success_file_path = '../dataset/error_data/real_error/' + file.replace('.dfy', '_success_' + str(seq) + '.dfy')
             save_file(success_file_path, completion)
         seq = 1
+
+
+def main(file_name):
+    test_file_path = '../Test_Cases/' + file_name + '.dfy'
+    method = read_file(test_file_path)
+    system_message = f"""
+Add missing loop invariant for this method without change or remove current code. Since your response\
+will be tested with verifier, pls be careful and accurate. 
+
+The response should Directly start with valid dafny code and code only. Do not apologize or explain \
+when making mistakes. Remeber to put full complete method into a single code block and return the \
+code block as your mesponse. Read error message carefully and modify your code accordingly.
+    """
+    messages=[
+          {"role": "system", "content": system_message},
+          {"role": "user", "content": method}
+        ]
+
+    completion = turbo_completion(messages)
+    loop_seq = 1
+    generated_file_path = f'../Generated_Code/{file_name}_{loop_seq}.dfy'
+    save_file(generated_file_path, completion)
+    test_result = verify(generated_file_path, 'dafny verify ')
+    optimized_error_message = process_error_message(generated_file_path, test_result)
+    valid_string = 'verified, 0 errors'
+
+    while valid_string not in test_result:
+        print(f'\033[91mFailed in seq: {loop_seq}\033[0m\n{optimized_error_message}\n\n')
+        generated_file_path = f'../Generated_Code/{file_name}_{loop_seq}.dfy'
+        save_file(generated_file_path, completion)
+        messages.append({"role": "assistant", "content": completion})
+        messages.append({"role": "user", "content": 'But verifier gave error: ' + optimized_error_message})
+        save_json(f'./chat_log/{file_name}_{loop_seq}.json', messages)
+        loop_seq += 1
+        time.sleep(2)
+        completion = turbo_completion(messages)
+        test_result = verify(generated_file_path, 'dafny verify ')
+        optimized_error_message = process_error_message(generated_file_path, test_result)
+    print(f'\033[92mSucceed in seq: {loop_seq}\033[0m\n{test_result}')
