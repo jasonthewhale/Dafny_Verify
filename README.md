@@ -1,4 +1,4 @@
-# Automated AI Loop Invariant Discovery - README
+# Automated AI Loop Invariant Discovery
 
 ## Introduction
 
